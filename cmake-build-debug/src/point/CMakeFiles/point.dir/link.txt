@@ -1,0 +1,2 @@
+C:\MinGW\bin\ar.exe qc libpoint.a  CMakeFiles/point.dir/PointManager.cpp.obj
+C:\MinGW\bin\ranlib.exe libpoint.a
