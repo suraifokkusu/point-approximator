@@ -2,6 +2,11 @@
 
 App::App() : window(sf::VideoMode(800, 600), "Point Approximator"), grid(), pointManager() {
     window.setFramerateLimit(60);
+
+    //передаем размер окна
+
+    sf::Vector2u size = window.getSize();
+    pointManager.setWindowSize(static_cast<float>(size.x), static_cast<float>(size.y));
 }
 
 void App::run() {

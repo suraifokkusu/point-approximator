@@ -9,6 +9,7 @@ public:
     enum class ApproximationType { Linear, Parabolic, Logarithmic };
 
     PointManager();
+    void setWindowSize(float width, float height);
     void handleEvent(const sf::Event& event, sf::RenderWindow& window);
     void draw(sf::RenderWindow& window);
     void drawColorDivision(sf::RenderWindow& window, sf::Time elapsed);
@@ -51,6 +52,8 @@ private:
     sf::Color color2 = sf::Color(255, 127, 80, 100); // второй цвет (коралловый)
     float colorBlend = 0.0f; // степень смешивания цветов
     float blendDirection = 1.0f; // направление смешивания цветов
+    float windowWidth = 800.0f;
+    float windowHeight = 600.0f;
 
     void addPoint(float x, float y);
     void removePoint(float x, float y);
