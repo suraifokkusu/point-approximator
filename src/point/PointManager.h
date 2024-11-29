@@ -9,6 +9,7 @@ public:
     enum class ApproximationType { Linear, Parabolic, Logarithmic };
 
     PointManager();
+    bool hasPoints() const;
     void setWindowSize(float width, float height);
     void handleEvent(const sf::Event& event, sf::RenderWindow& window);
     void draw(sf::RenderWindow& window);
@@ -48,8 +49,12 @@ private:
     float b = 0; // параметр смещения
     float c = 0; // дополнительный параметр для параболической аппроксимации
 
-    sf::Color color1 = sf::Color(70, 130, 180, 100); // первый цвет (стальной синий)
-    sf::Color color2 = sf::Color(255, 127, 80, 100); // второй цвет (коралловый)
+    sf::Color color1 = sf::Color(255, 69, 0, 100);   // Оранжево-красный с прозрачностью (OrangeRed)
+    sf::Color color2 = sf::Color(0, 191, 255, 100);  // Глубокий скай-блю с прозрачностью (DeepSkyBlue)
+    sf::Text equationText; //текст для отображения уравнения
+    sf::Text instructionText;
+
+
     float colorBlend = 0.0f; // степень смешивания цветов
     float blendDirection = 1.0f; // направление смешивания цветов
     float windowWidth = 800.0f;

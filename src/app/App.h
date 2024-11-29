@@ -4,6 +4,8 @@
 #include <SFML/Graphics.hpp>
 #include "../grid/Grid.h"
 #include "../point/PointManager.h"
+#include "../lavalamp/LavaLamp.h"
+
 
 class App {
 public:
@@ -15,6 +17,7 @@ private:
     sf::Clock appClock; // заменили имя переменной
     Grid grid;
     PointManager pointManager;
+    LavaLamp lavaLamp;
 
     void processEvents();
     void render();

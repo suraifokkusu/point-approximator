@@ -5,6 +5,8 @@ project(PointApproximator LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+add_compile_options(-finput-charset=UTF-8 -fexec-charset=UTF-8)
+
 # Выходная директория для сборки
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
@@ -25,9 +27,11 @@ FetchContent_MakeAvailable(SFML)
 add_subdirectory(src/app)
 add_subdirectory(src/grid)
 add_subdirectory(src/point)
+add_subdirectory(src/lavalamp)
+
 
 # Основной исполняемый файл
-add_executable(main src/main.cpp)
+add_executable(main src/main.cpp src/lavalamp/lavalamp.h src/lavalamp/lavalamp.cpp)
 
 # Линковка SFML и модулей
 target_link_libraries(main PRIVATE sfml-graphics sfml-window sfml-system app grid point)

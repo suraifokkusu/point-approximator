@@ -3,6 +3,7 @@
 #include <stdexcept>
 #include <numeric>
 #include <iostream>
+#include <iomanip>
 
 template <typename T>
 T clamp(T value, T min, T max) {
@@ -13,9 +14,30 @@ T clamp(T value, T min, T max) {
 
 
 PointManager::PointManager() : approximationLine(sf::LineStrip, 800) {
-    if (!font.loadFromFile("arial.ttf")) {
-        throw std::runtime_error("failed to load font from arial.ttf");
+    if (!font.loadFromFile("DejaVuSans.ttf")) {
+        throw std::runtime_error("failed to load font");
     }
+
+    // Инициализация текста уравнения
+    equationText.setFont(font);
+    equationText.setCharacterSize(16);
+    equationText.setFillColor(sf::Color::White);
+    equationText.setPosition(10, 10); // Положение текста на экране
+
+    // Инициализация текста справки
+    instructionText.setFont(font);
+    instructionText.setCharacterSize(14);
+    instructionText.setFillColor(sf::Color::White);
+    instructionText.setPosition(10, windowHeight - 100); // Положение текста справки
+    instructionText.setString(
+            L"Управление\n"
+            L"Левая кнопка мыши: добавить точку\n"
+            L"Правая кнопка мыши: удалить точку\n"
+            L"Клавиша C: очистить точки\n"
+            L"Клавиша 1: линейная аппроксимация\n"
+            L"Клавиша 2: параболическая аппроксимация\n"
+            L"Клавиша 3: логарифмическая аппроксимация"
+    );
 }
 
 void PointManager::handleEvent(const sf::Event& event, sf::RenderWindow& window) {
@@ -74,10 +96,15 @@ void PointManager::draw(sf::RenderWindow& window) {
         window.draw(point.label);
     }
 
-    // Рисуем линию аппроксимации, если она рассчитана
+    // Рисуем линию аппроксимации
     if (approximationLine.getVertexCount() > 1) {
         window.draw(approximationLine);
     }
+
+    // Рисуем текст уравнения
+    window.draw(equationText);
+
+    window.draw(instructionText);
 }
 
 void PointManager::removePoint(float x, float y) {
@@ -86,6 +113,10 @@ void PointManager::removePoint(float x, float y) {
                                     return std::hypot(p.x - x, p.y - y) < 10; // удаление точки в радиусе 10 пикселей
                                 }), points.end());
     calculateApproximation(); // Добавляем пересчет аппроксимации
+}
+
+bool PointManager::hasPoints() const {
+    return!points.empty();
 }
 
 void PointManager::clearPoints() {
@@ -136,6 +167,8 @@ void PointManager::calculateLinearApproximation() {
         b = meanY - a * meanX;
     }
 
+    sf::Color approximationColor = sf::Color::Blue; // Синий цвет
+
     // Обновляем линию аппроксимации
     approximationLine.clear();
     approximationLine.setPrimitiveType(sf::Lines);
@@ -146,11 +179,16 @@ void PointManager::calculateLinearApproximation() {
     endPoint.position = sf::Vector2f(windowWidth, a * windowWidth + b);
 
     // Устанавливаем цвет линии в зелёный
-    startPoint.color = sf::Color::Green;
-    endPoint.color = sf::Color::Green;
+    startPoint.color = approximationColor;
+    endPoint.color = approximationColor;
 
     approximationLine.append(startPoint);
     approximationLine.append(endPoint);
+
+    // Формируем строку уравнения
+    std::ostringstream equationStream;
+    equationStream << "y = " << std::fixed << std::setprecision(2) << a << "x + " << b;
+    equationText.setString(equationStream.str());
 }
 
 void PointManager::calculateParabolicApproximation() {
@@ -212,7 +250,7 @@ void PointManager::calculateParabolicApproximation() {
         approximationLine.clear();
         return; // Некорректные коэффициенты
     }
-
+    sf::Color approximationColor = sf::Color::Blue; // Синий цвет
     // Обновление линии аппроксимации
     approximationLine.clear();
     approximationLine.setPrimitiveType(sf::LinesStrip);
@@ -222,12 +260,14 @@ void PointManager::calculateParabolicApproximation() {
     for (float x = 0; x <= windowWidth; x += step) {
         float y = static_cast<float>(a * x * x + b * x + c);
         if (y >= 0 && y <= windowHeight) {
-            approximationLine.append(sf::Vertex(sf::Vector2f(x, y), sf::Color::Green));
+            approximationLine.append(sf::Vertex(sf::Vector2f(x, y), approximationColor));
         }
     }
 
-    // Обновление текста уравнения
-    //equationText.setString("y = " + std::to_string(a) + "x^2 + " + std::to_string(b) + "x + " + std::to_string(c));
+    // Формируем строку уравнения
+    std::ostringstream equationStream;
+    equationStream << "y = " << std::fixed << std::setprecision(2) << a << "x^2 + " << b << "x + " << c;
+    equationText.setString(equationStream.str());
 }
 
 void PointManager::calculateLogarithmicApproximation() {
@@ -252,11 +292,17 @@ void PointManager::calculateLogarithmicApproximation() {
     a = (n * sumLnXY - sumLnX * sumY) / denom;
     b = (sumY * sumLnX2 - sumLnX * sumLnXY) / denom;
 
+    sf::Color approximationColor = sf::Color::Blue; // Синий цвет
     approximationLine.clear();
     for (int x = 1; x <= 800; ++x) {
         float y = a * std::log(x) + b;
-        approximationLine.append(sf::Vertex(sf::Vector2f(x, y), sf::Color::Green));
+        approximationLine.append(sf::Vertex(sf::Vector2f(x, y), approximationColor));
     }
+
+    // Формируем строку уравнения
+    std::ostringstream equationStream;
+    equationStream << "y = " << std::fixed << std::setprecision(2) << a << "ln(x) + " << b;
+    equationText.setString(equationStream.str());
 }
 
 void PointManager::drawColorDivision(sf::RenderWindow& window, sf::Time elapsed) {
@@ -349,6 +395,13 @@ void PointManager::drawLogarithmicDivision(sf::RenderWindow& window) {
 void PointManager::setWindowSize(float width, float height) {
     windowHeight = height;
     windowWidth = width;
+
+    equationText.setPosition(10,10);
+
+    // Обновляем позицию текста справки
+    instructionText.setPosition(10, windowHeight - 120);
+
+    calculateApproximation();
 }
 
 sf::Color PointManager::blendColors(const sf::Color& c1, const sf::Color& c2, float blendFactor) {
