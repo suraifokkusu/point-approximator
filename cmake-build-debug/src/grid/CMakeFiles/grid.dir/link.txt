@@ -1,2 +1,0 @@
-C:\MinGW\bin\ar.exe qc libgrid.a  CMakeFiles/grid.dir/Grid.cpp.obj
-C:\MinGW\bin\ranlib.exe libgrid.a
