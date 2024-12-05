@@ -24,7 +24,7 @@ jobs:
     - name: Set up CMake
       uses: jwlawson/actions-setup-cmake@v1
       with:
-        cmakeVersion: '3.17.5'
+        cmakeVersion: '3.25.0'
 
     - name: Set up dependencies
       run: |
