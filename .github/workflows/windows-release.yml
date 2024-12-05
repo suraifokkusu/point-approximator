@@ -36,6 +36,15 @@ jobs:
         run: |
           cmake --build build --config Release
 
+        - name: Copy DLL dependencies
+          run: |
+            MINGW_PATH="C:/ProgramData/chocolatey/lib/mingw/tools/install/mingw64/bin"
+            TARGET_DIR="build/bin"
+            cp $MINGW_PATH/libgcc_s_seh-1.dll $TARGET_DIR
+            cp $MINGW_PATH/libstdc++-6.dll $TARGET_DIR
+            cp $MINGW_PATH/libwinpthread-1.dll $TARGET_DIR || echo "libwinpthread-1.dll не используется"
+    
+
       - name: Archive build artifacts
         run: |
           mkdir -p release
@@ -58,6 +67,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: release/main.exe
-          asset_name: main.exe
-          asset_content_type: application/octet-stream
+          asset_path: release/
+          asset_name: release.zip
+          asset_content_type: application/zip
