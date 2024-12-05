@@ -16,13 +16,10 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Install MinGW
-      run: |
-        choco install mingw -y
-        echo "::add-path::C:\ProgramData\chocolatey\lib\mingw\tools\install\mingw64\bin"
-
-    - name: Verify MinGW installation
-      run: g++ --version
+    - name: Set up MinGW
+      uses: egor-tensin/setup-mingw@v2
+      with:
+        platform: x64  # или x86, в зависимости от ваших требований
 
     - name: Configure CMake with MinGW
       run: |
