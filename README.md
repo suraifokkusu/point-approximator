@@ -4,7 +4,7 @@
 [![Компилятор](https://img.shields.io/badge/Компилятор-MinGW%2013.2.0-blue?style=flat-square)](https://www.mingw-w64.org/)
 [![Сборщик](https://img.shields.io/badge/Сборщик-CMake%203.31.1-blueviolet?style=flat-square)](https://cmake.org/)
 
-[![Windows Build with MinGW](https://github.com/suraifokkusu/point-approximator/actions/workflows/windows-mingw.yml/badge.svg)](https://github.com/suraifokkusu/point-approximator/actions/workflows/windows-mingw.yml)
+[![Build and Release for Point Approximator](https://github.com/suraifokkusu/point-approximator/actions/workflows/windows-release.yml/badge.svg)](https://github.com/suraifokkusu/point-approximator/actions/workflows/windows-release.yml)
 
 # Point Approximator
 
