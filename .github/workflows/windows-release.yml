@@ -37,13 +37,13 @@ jobs:
           cmake --build build --config Release
 
       - name: Copy DLL dependencies
+        shell: pwsh
         run: |
-            MINGW_PATH="C:/ProgramData/chocolatey/lib/mingw/tools/install/mingw64/bin"
-            TARGET_DIR="build/bin"
-            cp $MINGW_PATH/libgcc_s_seh-1.dll $TARGET_DIR
-            cp $MINGW_PATH/libstdc++-6.dll $TARGET_DIR
-            cp $MINGW_PATH/libwinpthread-1.dll $TARGET_DIR || echo "libwinpthread-1.dll не используется"
-    
+          $MINGW_PATH = "C:/ProgramData/chocolatey/lib/mingw/tools/install/mingw64/bin"
+          $TARGET_DIR = "build/bin"
+          Copy-Item "$MINGW_PATH/libgcc_s_seh-1.dll" $TARGET_DIR
+          Copy-Item "$MINGW_PATH/libstdc++-6.dll" $TARGET_DIR
+          Copy-Item "$MINGW_PATH/libwinpthread-1.dll" $TARGET_DIR -ErrorAction SilentlyContinue
 
       - name: Archive build artifacts
         run: |
