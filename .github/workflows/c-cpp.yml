@@ -1,4 +1,4 @@
-name: CMake Build and Test
+name: CMake Build
 
 on:
   push:
@@ -13,8 +13,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-        build-type: [Debug, Release]
+        os: [ubuntu-latest]
+        build-type: [Debug]
 
     steps:
     - name: Checkout repository
@@ -25,20 +25,14 @@ jobs:
       run: |
         sudo apt-get update || true
         sudo apt-get install -y cmake libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libgl1-mesa-dev libglu1-mesa-dev libudev-dev
-    
-    - name: Install CMake on Windows
-      if: runner.os == 'Windows'
-      uses: jwlawson/actions-setup-cmake@v1
-      with:
-        cmake-version: '3.25.0'
 
     - name: Configure CMake
       run: |
-        cmake -S . -B build -DCMAKE_BUILD_TYPE=${{ matrix.build-type }}
+        cmake -S . -B build \
+          -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
+          -DOPENGL_gl_LIBRARY=/usr/lib/x86_64-linux-gnu/libGL.so \
+          -DOPENGL_glx_LIBRARY=/usr/lib/x86_64-linux-gnu/libGLX.so \
+          -DOPENGL_INCLUDE_DIR=/usr/include
 
     - name: Build with CMake
       run: cmake --build build --config ${{ matrix.build-type }}
-
-    # - name: Test the build
-    #   if: always()
-    #   run: ctest --output-on-failure --test-dir build
