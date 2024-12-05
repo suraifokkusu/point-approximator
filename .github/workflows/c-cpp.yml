@@ -19,11 +19,10 @@ jobs:
     - name: Install MinGW
       run: |
         choco install mingw -y
-        refreshenv
+        echo "::add-path::C:\ProgramData\chocolatey\lib\mingw\tools\install\mingw64\bin"
 
-    - name: Add MinGW to PATH
-      run: |
-        echo "::add-path::C:\tools\mingw64\bin"
+    - name: Verify MinGW installation
+      run: g++ --version
 
     - name: Configure CMake with MinGW
       run: |
