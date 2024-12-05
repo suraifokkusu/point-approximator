@@ -4,6 +4,8 @@
 [![Компилятор](https://img.shields.io/badge/Компилятор-MinGW%2013.2.0-blue?style=flat-square)](https://www.mingw-w64.org/)
 [![Сборщик](https://img.shields.io/badge/Сборщик-CMake%203.31.1-blueviolet?style=flat-square)](https://cmake.org/)
 
+[![Windows Build with MinGW](https://github.com/suraifokkusu/point-approximator/actions/workflows/windows-mingw.yml/badge.svg)](https://github.com/suraifokkusu/point-approximator/actions/workflows/windows-mingw.yml)
+
 # Point Approximator
 
 **Point Approximator** — это приложение для аппроксимации точек с использованием линейной, параболической и логарифмической функций. Оно также включает визуальный эффект "лавовой лампы", который отображается, если на экране нет точек.
