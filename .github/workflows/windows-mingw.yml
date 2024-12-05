@@ -23,9 +23,10 @@ jobs:
         run: echo "C:\ProgramData\chocolatey\lib\mingw\tools\install\mingw64\bin" >> $GITHUB_PATH
 
       - name: Install CMake
-        run: |
-          choco install cmake --version 3.31.1 -y
-          echo "::add-path::C:\Program Files\CMake\bin"
+        run: choco install cmake --version 3.31.1 -y
+
+      - name: Добавление CMake в PATH
+        run: echo "C:\Program Files\CMake\bin" >> $GITHUB_PATH
 
       - name: Verify Installations
         run: |
