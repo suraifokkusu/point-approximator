@@ -26,12 +26,6 @@ jobs:
       with:
         cmake-version: '3.25.0'
 
-    - name: Install dependencies on macOS
-      if: runner.os == 'macos-latest'
-      run: |
-        brew update
-        brew install cmake
-
     - name: Configure CMake
       run: |
         cmake -S . -B build \
