@@ -13,35 +13,36 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    - name: Install MinGW
-      run: |
-        choco install mingw --version 13.2.0 -y
-        echo "::add-path::C:\ProgramData\chocolatey\lib\mingw\tools\install\mingw64\bin"
+      - name: Установка MinGW
+        run: choco install mingw -y
 
-    - name: Install CMake
-      run: |
-        choco install cmake --version 3.31.1 -y
-        echo "::add-path::C:\Program Files\CMake\bin"
+      - name: Добавление MinGW в PATH
+        run: echo "C:\ProgramData\chocolatey\lib\mingw\tools\install\mingw64\bin" >> $GITHUB_PATH
 
-    - name: Verify Installations
-      run: |
-        g++ --version
-        cmake --version
+      - name: Install CMake
+        run: |
+          choco install cmake --version 3.31.1 -y
+          echo "::add-path::C:\Program Files\CMake\bin"
 
-    - name: Configure CMake
-      run: |
-        cmake -S . -B build -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release
+      - name: Verify Installations
+        run: |
+          g++ --version
+          cmake --version
 
-    - name: Build with CMake
-      run: |
-        cmake --build build --config Release
+      - name: Configure CMake
+        run: |
+          cmake -S . -B build -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release
 
-    - name: Upload Build Artifacts
-      if: success()
-      uses: actions/upload-artifact@v3
-      with:
-        name: build
-        path: build/
+      - name: Build with CMake
+        run: |
+          cmake --build build --config Release
+
+      - name: Upload Build Artifacts
+        if: success()
+        uses: actions/upload-artifact@v3
+        with:
+          name: build
+          path: build/
