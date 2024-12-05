@@ -20,17 +20,14 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Debug OpenGL paths on Linux
+    - name: Install dependencies on Linux
       if: runner.os == 'ubuntu-latest'
       run: |
-        echo "Checking OpenGL library..."
-        ls -l /usr/lib/x86_64-linux-gnu/libGL.so || echo "libGL.so not found"
-        echo "Checking OpenGL headers..."
-        ls -l /usr/include/GL || echo "GL headers not found"
-        echo "System information:"
-        uname -a
-        echo "CMake version:"
-        cmake --version
+        sudo apt-get update || true
+        sudo apt-get install -y cmake libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libgl1-mesa-dev libglu1-mesa-dev libudev-dev
+        # Проверяем пути для UDev
+        ls /usr/include/libudev.h || echo "libudev.h not found"
+        ls /usr/lib/x86_64-linux-gnu/libudev.so || echo "libudev.so not found"
 
     - name: Install CMake on Windows
       if: runner.os == 'windows-latest'
@@ -48,9 +45,10 @@ jobs:
       run: |
         cmake -S . -B build \
           -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} \
-          -DOPENGL_gl_LIBRARY=/alternative/path/to/libGL.so \
-          -DOPENGL_INCLUDE_DIR=/alternative/path/to/GL
-
+          -DUDEV_PATH_INCLUDES=/usr/include \
+          -DUDEV_PATH_LIB=/usr/lib/x86_64-linux-gnu/libudev.so \
+          -DOPENGL_gl_LIBRARY=/usr/lib/x86_64-linux-gnu/libGL.so \
+          -DOPENGL_INCLUDE_DIR=/usr/include/GL
 
     - name: Build with CMake
       run: cmake --build build --config ${{ matrix.build-type }}
