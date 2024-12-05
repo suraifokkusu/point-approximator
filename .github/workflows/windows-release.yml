@@ -10,59 +10,61 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    - name: Set up MSYS2 (MinGW)
-      id: msys2
-      uses: msys2/setup-msys2@v2
-      with:
-        update: true
-        install: >-
-          mingw-w64-x86_64-gcc
-          mingw-w64-x86_64-cmake
-          mingw-w64-x86_64-make
-          zip
+      - name: Set up MSYS2 (MinGW)
+        id: msys2
+        uses: msys2/setup-msys2@v2
+        with:
+          update: true
+          install: >-
+            mingw-w64-x86_64-gcc
+            mingw-w64-x86_64-cmake
+            mingw-w64-x86_64-make
+            zip
 
-    - name: Configure and Build
-      run: |
-        cmake -S . -B build -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release
-        cmake --build build --config Release
-      shell: msys2 {0}
+      - name: Configure and Build
+        run: |
+          cmake -S . -B build -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release
+          cmake --build build --config Release
+        shell: msys2 {0}
 
-    - name: Copy DLL dependencies
-      run: |
-        MINGW_BIN="${{ steps.msys2.outputs['msys2-location'] }}/mingw64/bin"
-        TARGET_DIR="build/bin"
-        cp "$MINGW_BIN/libgcc_s_seh-1.dll" "$TARGET_DIR"
-        cp "$MINGW_BIN/libstdc++-6.dll" "$TARGET_DIR"
-        cp "$MINGW_BIN/libwinpthread-1.dll" "$TARGET_DIR" || echo "libwinpthread-1.dll не используется"
-      shell: msys2 {0}
+      - name: Copy DLL dependencies
+        run: |
+          MINGW_BIN="${{ steps.msys2.outputs['msys2-location'] }}/mingw64/bin"
+          TARGET_DIR="build/bin"
+          cp "$MINGW_BIN/libgcc_s_seh-1.dll" "$TARGET_DIR"
+          cp "$MINGW_BIN/libstdc++-6.dll" "$TARGET_DIR"
+          cp "$MINGW_BIN/libwinpthread-1.dll" "$TARGET_DIR" || echo "libwinpthread-1.dll не используется"
+        shell: msys2 {0}
 
-    - name: Archive Release Files
-      run: |
-        mkdir -p release
-        cp build/bin/* release/
-        cd release
-        zip -r PointApproximator-v${{ github.ref_name }}.zip *
-        cd ..
-      shell: msys2 {0}
+      - name: Archive Release Files
+        run: |
+          mkdir -p release
+          cp build/bin/* release/
+          cd release
+          zip -r PointApproximator-v${{ github.ref_name }}.zip *
+          cd ..
+        shell: msys2 {0}
 
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      with:
-        tag_name: ${{ github.ref_name }}
-        release_name: Release ${{ github.ref_name }}
-        draft: false
-        prerelease: false
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        with:
+          tag_name: ${{ github.ref_name }}
+          release_name: Release ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Upload Release Asset
-      uses: actions/upload-release-asset@v1
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: release/PointApproximator-v${{ github.ref_name }}.zip
-        asset_name: PointApproximator-v${{ github.ref_name }}.zip
-        asset_content_type: application/zip
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: release/PointApproximator-v${{ github.ref_name }}.zip
+          asset_name: PointApproximator-v${{ github.ref_name }}.zip
+          asset_content_type: application/zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
