@@ -36,8 +36,8 @@ jobs:
         run: |
           cmake --build build --config Release
 
-        - name: Copy DLL dependencies
-          run: |
+      - name: Copy DLL dependencies
+        run: |
             MINGW_PATH="C:/ProgramData/chocolatey/lib/mingw/tools/install/mingw64/bin"
             TARGET_DIR="build/bin"
             cp $MINGW_PATH/libgcc_s_seh-1.dll $TARGET_DIR
