@@ -1,4 +1,4 @@
-name: CMake Build
+name: Windows Build with MinGW
 
 on:
   push:
@@ -10,26 +10,25 @@ on:
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [windows-latest]  # Убрали Linux + Mac
-        build-type: [Debug, Release]
+    runs-on: windows-latest
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Install CMake on Windows
-      if: runner.os == 'windows-latest'
-      uses: jwlawson/actions-setup-cmake@v1
-      with:
-        cmake-version: '3.25.0'
-
-    - name: Configure CMake
+    - name: Install MinGW
       run: |
-        cmake -S . -B build \
-          -DCMAKE_BUILD_TYPE=${{ matrix.build-type }}
+        choco install mingw -y
+        refreshenv
 
-    - name: Build with CMake
-      run: cmake --build build --config ${{ matrix.build-type }}
+    - name: Add MinGW to PATH
+      run: |
+        echo "::add-path::C:\tools\mingw64\bin"
+
+    - name: Configure CMake with MinGW
+      run: |
+        cmake -S . -B build -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release
+
+    - name: Build with MinGW
+      run: |
+        cmake --build build --config Release
